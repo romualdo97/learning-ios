@@ -36,5 +36,6 @@ class Meal {
         self.photo = photo;
         self.rating = rating;
     }
+
 }
 
