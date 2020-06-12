@@ -28,6 +28,14 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
         // Handle the text field's user input through delegate callbacks
         nameTextField.delegate = self;
         
+        // Setup views if editing an existing meal
+        if let meal = meal {
+            navigationItem.title = meal.name;
+            nameTextField.text = meal.name;
+            photoImageView.image = meal.photo;
+            ratingControl.rating = meal.rating;
+        }
+        
         // Enable the save button only if the text field has a valid meal name
         updateSaveButtonState();
     }
@@ -102,7 +110,31 @@ class MealViewController: UIViewController, UITextFieldDelegate, UIImagePickerCo
     
     // MARK: Actions
     @IBAction func cancel(_ sender: UIBarButtonItem) {
-        dismiss(animated: true, completion: nil);
+        // the type of simissal depends on how the scene was presented
+        // You'll implemt a check that detremines how the current scene was presented when the user taps
+        // the cancel button, if it was presented modally (the user tapped the addButton)
+        // it'll be dismissed using dismiss(animated:completion:).
+        // if it was presented with push navigation (the user tapped a table view cell).
+        // it will be dismissed by the navigation controller that presented it
+        
+        // depending on style of presentation (modal or push presentation), this view controller
+        // needs to be dismissed in two different ways.
+        
+        // this code creates a boolean value, that indicates whether the view controller that
+        // presented this scene is of type UINavigationController. As the constant name
+        // isPresentingInAddMealMode indicates, this means that the meal detail scene is
+        // presented by the user tapping the add button.
+        // this is because the meal detail scene is embedded in its own navigation controller
+        // when it's presented in this manner, which means that the naavigation controller is what presents it.
+        
+        let isPresentingInAddMealMode = presentingViewController is UINavigationController;
+        if isPresentingInAddMealMode {
+            dismiss(animated: true, completion: nil);
+        } else if let owningNavigationController = navigationController {
+            owningNavigationController.popViewController(animated: true);
+        } else {
+            fatalError("The MealViewController is not inside a navigation controller");
+        }
     }
     
     @IBAction func selectImageFromPhotoLibrary(_ sender: UITapGestureRecognizer) {
