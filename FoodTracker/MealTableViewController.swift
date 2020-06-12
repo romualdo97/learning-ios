@@ -103,6 +103,21 @@ class MealTableViewController: UITableViewController {
     }
     */
     
+    // MARK: Actions
+    @IBAction func unwindToMealList(sender: UIStoryboardSegue) {
+        if let sourceViewController = sender.source as? MealViewController, let meal = sourceViewController.meal {
+            
+            // add a new meal
+            let newIndexPath = IndexPath(row: meals.count, section: 0);
+            meals.append(meal);
+            tableView.insertRows(at: [newIndexPath], with: .automatic);
+            
+            // unwind segues provide a simple method for passing information back to an earlier view controller.
+            // sometime, however, you need more complex communication between your view controllers.
+            // in those cases consider using the "delegate" pattern
+        }
+    }
+    
     // MARK: Private methods
     
     /// Load sample data for being used in the table view scene
